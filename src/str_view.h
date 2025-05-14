@@ -1,9 +1,10 @@
 #ifndef STR_VIEW_H
 #define STR_VIEW_H
 
-#include <string_view>
 #include <cstdint>
-#include <vec.h>
+#include <string_view>
+
+template <typename T> class Vec;
 
 class Str;
 

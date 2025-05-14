@@ -3,6 +3,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <vec.h>
 
 // 构造函数实现
 Str::Str(const Str &lv) : _data(lv._data) {}

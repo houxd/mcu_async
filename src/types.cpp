@@ -6,8 +6,8 @@ void _test_types() {
     // Test enum2str and str2enum
     enum class Color { RED, GREEN, BLUE };
     Color color = Color::GREEN;
-    Str color_str = enum2str(color);
-    Color color_from_str = str2enum(color_str.c_str(), Color::RED);
+    Str color_str = enum_str(color);
+    Color color_from_str = enum_cast(color_str.c_str(), Color::RED);
     if (color_from_str == Color::GREEN) {
         printf("Enum Test Success: %s\n", color_str.c_str());
     } else {

@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
+#include <vec.h>
 
 // 构造函数实现
 StrView::StrView(const StrView& lv) : _data(lv._data) {}

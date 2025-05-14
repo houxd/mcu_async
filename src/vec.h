@@ -7,6 +7,9 @@
 
 #include <vector>
 #include <utility>
+#include <algorithm>
+#include <str.h>
+#include <str_view.h>
 
 template <typename T> 
 class Vec {
@@ -188,11 +191,45 @@ class Vec {
         }
         return ret;
     }
+
+    // 排序数组（原地修改）
+    void sort() {
+        std::sort(begin(), end());
+    }
+    
+    template<typename Compare>
+    void sort(Compare comp) {
+        std::sort(begin(), end(), comp);
+    }
+    
+    // 反转数组（原地修改）
+    void reverse() {
+        std::reverse(begin(), end());
+    }
     
     // 获取内部vector的引用（如果需要）
     const std::vector<T>& as_vector() const& { return data; }
     std::vector<T>& as_vector() & { return data; }
+
+    inline T join(const StrView& sep="") const {
+        (void)sep;
+        static_assert(std::is_same<T, Str>::value, "join() only works with Str type");
+    }
 };
+
+template<>
+inline Str Vec<Str>::join(const StrView& sep) const {
+    if (empty()) {
+        return Str();
+    }
+    
+    Str ret = at(0);
+    for (unsigned i = 1; i < size(); i++) {
+        ret.append(sep);
+        ret.append(at(i));
+    }
+    return ret;
+}
 
 extern void _test_vec();
 

@@ -6,9 +6,9 @@
 #define STR_H
 
 #include <cstdint>
+#include <string>
 #include <printf.h>
 #include <str_view.h>
-#include <string>
 
 class Str : public Printf {
     std::string _data;
@@ -34,6 +34,8 @@ class Str : public Printf {
     Str(const char *lv, size_t len);
     Str(const char *lv, size_t off, size_t len);
     Str(size_t n, char c);
+
+    virtual ~Str(){}
 
     Str(const std::string &lv);
     Str(std::string &&rv);
