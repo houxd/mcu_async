@@ -13,7 +13,7 @@ void _test_buf() {
     rb.pop();
     printf("RingBuffer front after pop: %d\n", rb.front());
     printf("RingBuffer size after pop: %d\n", rb.size());
-    rb.reset();
+    rb.clear();
     printf("RingBuffer size after reset: %d\n", rb.size());
     printf("RingBuffer is empty after reset: %d\n", rb.is_empty());
     for (int i = 0; i < 10; ++i) {
@@ -38,7 +38,7 @@ void _test_buf() {
         printf("%d ", arr[i]);
     }
     printf("\n");
-    rb.reset();
+    rb.clear();
     printf("RingBuffer size after reset: %d\n", rb.size());
     printf("RingBuffer is empty after reset: %d\n", rb.is_empty());
 

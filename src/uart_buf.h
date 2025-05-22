@@ -14,16 +14,23 @@ private:
     Buf<char> _tx;
     Buf<char> _rx;
     WriteFunc _write_cb;
-    Poll _read_poll;
     bool _lf2crlf = false;
 public:
     UartBuf(int buf_size, WriteFunc write_cb);
+    Buf<char>& tx() { return _tx; }
+    Buf<char>& rx() { return _rx; }
+
     int getc();
     int gets(char *s, int n);
     void clear_rx();
+
     void putc(char c);
     void puts(const char *s);
     void flush();
+
+    int read(void *buf, int n);
+    int write(const void *buf, int n);
+
     // 用于串口中断ISR, 或者轮训输入
     void uart_intput(char c);
     void set_lf2crlf_enable(bool b);

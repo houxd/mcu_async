@@ -227,6 +227,14 @@ Shared<Task> start_task(const Func<void(Task*)>& cb) {
     return thread;
 }
 
+Shared<Task> start_task(const Str &name, const Func<void (Task *)> &cb)
+{
+    auto thread = make_shared<_SimpleTask>(cb);
+    _set_poll_thread(thread);
+    thread->set_name(name);
+    return thread;
+}
+
 void cmd_ps(Env e) {
     auto& io = e.io();
     auto& args = e.args;

@@ -279,6 +279,11 @@ class Str : public Printf {
         result._data += rhs._data;
         return result;
     }
+    Str operator+(Str&& rhs) const {
+        Str result(*this);
+        result._data += std::move(rhs._data);
+        return result;
+    }
     Str operator+(const char* rhs) const {
         Str result(*this);
         result._data += rhs;
@@ -289,13 +294,33 @@ class Str : public Printf {
         result._data += rhs;
         return result;
     }
-    
+    Str operator+(const StrView& rhs) const {
+        Str result(*this);
+        result._data += rhs.std_str_view();
+        return result;
+    }
+    template<typename T>
+    Str operator+(const T& rhs) const {
+        Str result(*this);
+        result._data += std::to_string(rhs);
+        return result;
+    }
+
     Str& operator+=(const char* s) {
         _data += s;
         return *this;
     }
     Str& operator+=(char c) {
         _data += c;
+        return *this;
+    }
+    Str& operator+=(const StrView& sv) {
+        _data += sv.std_str_view();
+        return *this;
+    }
+    template<typename T>
+    Str& operator+=(const T& v) {
+        _data += std::to_string(v);
         return *this;
     }
     
@@ -330,6 +355,10 @@ inline Str operator+(char lhs, const Str& rhs) {
     Str result(1, lhs);
     result += rhs;
     return result;
+}
+
+inline Str operator""_s(const char* str, size_t) {
+    return Str(str);
 }
 
 extern void _test_str();

@@ -59,6 +59,8 @@ template <typename T> struct Async {
                 });
             }
             T await_resume() {
+                get_current_task()->terminal();
+
                 return handle.promise().result;
                 // T result = handle.promise().result;
                 // handle.destroy(); use poll to destroy
@@ -105,6 +107,7 @@ template <> struct Async<void> {
                 });
             }
             void await_resume() {
+                get_current_task()->terminal();
                 //handle.destroy(); use poll to destroy
             }
         };

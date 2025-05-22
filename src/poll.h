@@ -56,6 +56,7 @@ protected:
 };
 extern void start_task(Shared<Task> thread);
 extern Shared<Task> start_task(const Func<void(Task*)>& cb);
+extern Shared<Task> start_task(const Str& name, const Func<void(Task*)>& cb);
 extern Shared<Task> get_task(IdType task_id);
 extern Shared<Task> get_task(const Str& name);
 extern Shared<Task> get_current_task();

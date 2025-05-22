@@ -6,9 +6,10 @@
 #include <type_traits>
 
 template <typename T> class Buf {
-    static_assert(std::is_trivially_copyable<T>::value, "Buf only supports trivially copyable types");
+    static_assert(std::is_trivially_copyable<T>::value,
+                  "Buf only supports trivially copyable types");
 
-    T *_buf;                // the buffer 
+    T *_buf;                // the buffer
     int _buf_size;          // 缓冲区大小
     volatile int _head = 0; // 写指针（中断/生产者）
     volatile int _tail = 0; // 读指针（主循环/消费者）
@@ -45,7 +46,7 @@ template <typename T> class Buf {
     // 禁止拷贝
     Buf(const Buf &) = delete;
     Buf &operator=(const Buf &) = delete;
-    
+
     inline const T *buffer() const { return _buf; }
     inline T *buffer() { return _buf; }
 
@@ -56,10 +57,10 @@ template <typename T> class Buf {
             return h - t;
         return _buf_size - t + h;
     }
-    inline void reset() {
-        _head = 0;
-        _tail = 0;
-    }
+    // inline void reset() {
+    //     _head = 0;
+    //     _tail = 0;
+    // }
     inline bool is_empty() const { return _tail == _head; }
     inline bool is_full() const { return ((_head + 1) % _buf_size) == _tail; }
 
@@ -72,10 +73,11 @@ template <typename T> class Buf {
         return _buf[_tail];
     }
     inline void pop() {
-        if(is_empty())
+        if (is_empty())
             return;
         _tail = (_tail + 1) % _buf_size;
     }
+    inline void clear() { _tail = _head; }
     inline int pop(int n) {
         for (int i = 0; i < n; i++) {
             if (is_empty())
@@ -94,7 +96,7 @@ template <typename T> class Buf {
     }
     inline int push(const T *many, int n) {
         for (int i = 0; i < n; i++) {
-            if (!push_back(many[i]))
+            if (!push(many[i]))
                 return i; // 满
         }
         return n;
@@ -110,7 +112,7 @@ template <typename T> class Buf {
     }
 
     // 拷贝n个数据到dest，返回实际拷贝的元素数量(<=n)
-    inline int copy_to(T *dest, int n) const {
+    int copy_to(T *dest, int n) const {
         if (n > size())
             n = size();
         if (n == 0)
@@ -121,8 +123,14 @@ template <typename T> class Buf {
         } else {
             // 分两段
             int first = _buf_size - _tail;
-            memcpy(dest, _buf + _tail, first * sizeof(T));
-            memcpy(dest + first, _buf, (n - first) * sizeof(T));
+            if (first >= n) {
+                // 第一段数据足够，只需要复制n个
+                memcpy(dest, _buf + _tail, n * sizeof(T));
+            } else {
+                // 需要两段数据
+                memcpy(dest, _buf + _tail, first * sizeof(T));
+                memcpy(dest + first, _buf, (n - first) * sizeof(T));
+            }
         }
         return n;
     }
